@@ -88,7 +88,7 @@ shiny_progress <- function(type = c("down", "up"), con = stdout(), shiny_progres
 progress_bar <- function(type, con, shiny_progress_obj) {
   bar <- NULL
 
-  show_progress <- function(down, up, shiny_progress_obj) {
+  show_progress <- function(down, up) {
     if (type == "down") {
       total <- down[[1]]
       now <- down[[2]]
