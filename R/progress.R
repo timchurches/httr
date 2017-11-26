@@ -76,7 +76,7 @@ bytes <- function(x, digits = 3, ...) {
 # custom Shiny-enabled progress for downloads
 #' Add a Shiny progress notifier.
 #' @export
-shiny_progress <- function(type = c("down", "up"), con = stdout(), shiny_progress_obj=None) {
+shiny_progress <- function(type = c("down", "up"), con = stdout(), , shiny_progress_obj=None) {
   type <- match.arg(type)
 
   request(options = list(
@@ -92,18 +92,23 @@ progress_bar <- function(type, con, shiny_progress_obj) {
     if (type == "down") {
       total <- down[[1]]
       now <- down[[2]]
+      noun <- "download"
+      verb <- "Downloaded"
     } else {
       total <- up[[1]]
       now <- up[[2]]
+      noun <- "upload"
+      verb <- "Uploaded"
     }
 
     if (total == 0 && now == 0) {
-      # Reset progress bar when seeing first byte
-      shiny_progress_obj$set(message = "Initialising download...")
+      # Initialise progress bar when seeing first byte
+      shiny_progress_obj$set(message = paste("Waiting for", noun, "to commence..."))
     } else if (total == 0) {
-      shiny_progress_obj$set(message = paste("Downloaded", bytes(now, digits = 2)))
+      shiny_progress_obj$set(message = paste(verb, bytes(now, digits = 2)))
     } else {
-      shiny_progress_obj$set(message = paste("Downloaded", bytes(now, digits = 2), "of",bytes(total, digits = 2)))
+      progress_val <- (now/total)*10000
+      shiny_progress_obj$set(value=progress_val, message = paste(verb, bytes(now, digits = 2), "of",bytes(total, digits = 2)))
     }
 
     TRUE
