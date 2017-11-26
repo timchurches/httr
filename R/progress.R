@@ -85,10 +85,10 @@ shiny_progress <- function(type = c("down", "up"), con = stdout(), shiny_progres
   ))
 }
 
-progress_bar <- function(type, con, progress_obj) {
+progress_bar <- function(type, con, shiny_progress_obj) {
   bar <- NULL
 
-  show_progress <- function(down, up, progress_obj) {
+  show_progress <- function(down, up, shiny_progress_obj) {
     if (type == "down") {
       total <- down[[1]]
       now <- down[[2]]
@@ -99,11 +99,11 @@ progress_bar <- function(type, con, progress_obj) {
 
     if (total == 0 && now == 0) {
       # Reset progress bar when seeing first byte
-      progress_obj$set(message = "Initialising download...")
+      shiny_progress_obj$set(message = "Initialising download...")
     } else if (total == 0) {
-      progress_obj$set(message = paste("Downloaded", bytes(now, digits = 2)))
+      shiny_progress_obj$set(message = paste("Downloaded", bytes(now, digits = 2)))
     } else {
-      progress_obj$set(message = paste("Downloaded", bytes(now, digits = 2), "of",bytes(total, digits = 2)))
+      shiny_progress_obj$set(message = paste("Downloaded", bytes(now, digits = 2), "of",bytes(total, digits = 2)))
     }
 
     TRUE
