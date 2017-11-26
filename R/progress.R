@@ -72,3 +72,40 @@ bytes <- function(x, digits = 3, ...) {
 
   paste0(formatted, " ", unit)
 }
+
+# custom Shiny-enabled progress for downloads
+shiny_progress <- function(type = c("down", "up"), con = stdout(), shiny_progress_obj=None) {
+  type <- match.arg(type)
+
+  httr::request(options = list(
+    noprogress = FALSE,
+    progressfunction = progress_bar(type, con, shiny_progress_obj)
+  ))
+}
+
+progress_bar <- function(type, con, progress_obj) {
+  bar <- NULL
+
+  show_progress <- function(down, up, progress_obj) {
+    if (type == "down") {
+      total <- down[[1]]
+      now <- down[[2]]
+    } else {
+      total <- up[[1]]
+      now <- up[[2]]
+    }
+
+    if (total == 0 && now == 0) {
+      # Reset progress bar when seeing first byte
+      progress_obj$set(message = "Initialising download...")
+    } else if (total == 0) {
+      progress_obj$set(message = paste("Downloaded", bytes(now, digits = 2)))
+    } else {
+      progress_obj$set(message = paste("Downloaded", bytes(now, digits = 2), "of",bytes(total, digits = 2)))
+    }
+
+    TRUE
+  }
+
+  show_progress
+}
