@@ -76,7 +76,7 @@ bytes <- function(x, digits = 3, ...) {
 # custom Shiny-enabled progress for downloads
 #' Add a Shiny progress notifier.
 #' @export
-shiny_progress <- function(type = c("down", "up"), con = stdout(), shiny_progress_obj=None) {
+shiny_progress <- function(type = c("down", "up"), con = stdout(), shiny_progress_obj=NULL) {
   type <- match.arg(type)
 
   request(options = list(
